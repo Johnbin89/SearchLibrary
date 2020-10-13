@@ -5,15 +5,16 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="search-jbin", # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="jbin",
     author_email="john_biniaris@hotmail.com",
     description="A library of searh algorithms",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",
-    packages=['search'],
-    package_dir={'': 'src'},
+    packages=setuptools.find_namespace_packages(),
+    #packages=['search'],
+    #package_dir={'': 'src'},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
