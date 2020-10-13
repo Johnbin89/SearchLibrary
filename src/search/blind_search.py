@@ -1,12 +1,11 @@
-from data_structs import Node, StackFrontier, QueueFrontier
+from .data_structs import Node, StackFrontier, QueueFrontier
 
 
 def depth_first_search(**kwargs):
-    state_space = kwargs.get('state_space', None)
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
-    show_explored = kwargs.get('show_explored', False)
+    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
     depth = kwargs.get('depth', None)   #this is used only when dfs is called in iterative deepening to a certain depth
     
     #print("Depth: {}".format(depth))
@@ -67,10 +66,10 @@ def depth_first_search(**kwargs):
 
 
 def breadth_first_search(**kwargs):
-    state_space = kwargs.get('state_space', None)
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
+    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
 
     num_explored = 0
     start = Node(state=start, parent=None, action=None)
@@ -113,7 +112,7 @@ def iterative_deepening(**kwargs):
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
-    show_explored = kwargs.get('show_explored', False)
+    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
     
     depth = 1
     solution = None

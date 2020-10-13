@@ -8,11 +8,12 @@ setuptools.setup(
     version="0.0.1",
     author="jbin",
     author_email="john_biniaris@hotmail.com",
-    description="A library of searh algorithms"
+    description="A library of searh algorithms",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",
-    packages=setuptools.find_packages(),
+    packages=['search'],
+    package_dir={'': 'src'},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

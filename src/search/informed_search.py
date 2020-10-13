@@ -1,14 +1,12 @@
-from data_structs import CNode, MyPriorityQueue
-from queue import PriorityQueue
+from .data_structs import CNode, MyPriorityQueue
 
 
 def a_search(**kwargs):
-    state_space = kwargs.get('state_space', None)
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
     heuristic = kwargs.get('heuristic', None)
-    show_explored = kwargs.get('show_explored', False)
+    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
     
 
     num_explored = 0
@@ -58,12 +56,11 @@ def a_search(**kwargs):
 
 
 def best_first_search(**kwargs):
-    state_space = kwargs.get('state_space', None)
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
     heuristic = kwargs.get('heuristic', None)
-    show_explored = kwargs.get('show_explored', False)
+    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
     
 
     num_explored = 0
