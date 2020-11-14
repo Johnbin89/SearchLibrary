@@ -1,4 +1,4 @@
-from .data_structs import Node, StackFrontier, QueueFrontier
+from .data_structs import Node, WeightNode, StackFrontier, QueueFrontier
 
 
 def depth_first_search(**kwargs):
@@ -69,7 +69,7 @@ def breadth_first_search(**kwargs):
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
-    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    #show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
 
     num_explored = 0
     start = Node(state=start, parent=None, action=None)
@@ -121,3 +121,49 @@ def iterative_deepening(**kwargs):
         depth += 1
     print(solution)
     return solution
+
+
+def branch_and_bound(**kwargs):
+    actions = kwargs.get('actions', None)
+    start = kwargs.get('start', None)
+    goal = kwargs.get('goal', None)
+    path_cost = kwargs.get('path_cost', None)
+    #show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+
+    start = WeightNode(state=start, parent=None, action=None, cost=0)
+    frontier = QueueFrontier()
+    frontier.add(start)
+    explored = set()
+    best_cost = float('inf')
+    best_solution = None
+    while True:
+
+        if frontier.empty():
+            return best_solution, best_cost
+
+        node = frontier.remove()
+        #node.cost = node.parent.cost + path_cost(node.parent.state + node.state)
+        print(node.state)
+        if node.cost < best_cost:
+            print('inside')
+            if node.state == goal and node.parent:
+                actions_to_goal = []
+                states_to_goal = []
+                while node.parent is not None:
+                    actions_to_goal.append(node.action)
+                    states_to_goal.append(node.state)
+                    node = node.parent
+                actions_to_goal.reverse()
+                states_to_goal.reverse()
+                best_solution = (actions_to_goal, states_to_goal)
+                best_cost = node.cost
+                print("best cost: {}".format(best_cost))
+
+            explored.add((node.action,node.state))
+
+            for action, state in actions(node.state):
+                if not frontier.contains_node(action, state) and (action,state) not in explored:
+                    child = Node(state=state, parent=node, action=action)
+                    child.cost = child.parent.cost + path_cost(child.parent.state, child.state)
+                    print(child, child.cost)
+                    frontier.add(child)
