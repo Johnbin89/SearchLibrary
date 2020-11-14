@@ -128,7 +128,7 @@ def branch_and_bound(**kwargs):
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
     path_cost = kwargs.get('path_cost', None)
-    #show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
 
     start = WeightNode(state=start, parent=None, action=None, cost=0)
     frontier = QueueFrontier()
@@ -139,14 +139,19 @@ def branch_and_bound(**kwargs):
     while True:
 
         if frontier.empty():
-            return best_solution, best_cost
+            if show_explored:
+                return best_solution, explored
+            else:
+                return best_solution
 
         node = frontier.remove()
         #node.cost = node.parent.cost + path_cost(node.parent.state + node.state)
-        print(node.state)
+        print("Pickedup:",node.action, node.state, node.cost)
         if node.cost < best_cost:
             print('inside')
             if node.state == goal and node.parent:
+                print("solution found")
+                best_cost = node.cost
                 actions_to_goal = []
                 states_to_goal = []
                 while node.parent is not None:
@@ -156,14 +161,14 @@ def branch_and_bound(**kwargs):
                 actions_to_goal.reverse()
                 states_to_goal.reverse()
                 best_solution = (actions_to_goal, states_to_goal)
-                best_cost = node.cost
+                print("best solution: {}".format(best_solution))
                 print("best cost: {}".format(best_cost))
 
             explored.add((node.action,node.state))
 
-            for action, state in actions(node.state):
+            for action, state in actions(node.action, node.state):
                 if not frontier.contains_node(action, state) and (action,state) not in explored:
                     child = Node(state=state, parent=node, action=action)
                     child.cost = child.parent.cost + path_cost(child.parent.state, child.state)
-                    print(child, child.cost)
+                    print(child.action, child.cost)
                     frontier.add(child)
