@@ -1,4 +1,4 @@
-from .data_structs import CNode, MyPriorityQueue, StackFrontier
+from .data_structs import HeuristicNode, MyPriorityQueue, StackFrontier
 
 
 def a_star(**kwargs):
@@ -10,7 +10,7 @@ def a_star(**kwargs):
     
 
     num_explored = 0
-    start = CNode(state=start, parent=None, action=None, cost=0)
+    start = HeuristicNode(state=start, parent=None, action=None, cost=0)
     
     frontier = MyPriorityQueue()
     costs = {}
@@ -46,7 +46,7 @@ def a_star(**kwargs):
         for action, state in actions(node.state):
             if state in explored:
                 continue
-            child = CNode(state=state, parent=node, action=action)
+            child = HeuristicNode(state=state, parent=node, action=action)
             child.cost = child.cost_from_start + heuristic(child.state, goal)
             if child not in costs or  child.cost < costs[child]:
                 if child in costs:
@@ -64,7 +64,7 @@ def best_first_search(**kwargs):
     
 
     num_explored = 0
-    start = CNode(state=start, parent=None, action=None, cost=0)
+    start = HeuristicNode(state=start, parent=None, action=None, cost=0)
     
     frontier = MyPriorityQueue()
     costs = {}
@@ -100,7 +100,7 @@ def best_first_search(**kwargs):
         for action, state in actions(node.state):
             if state in explored:
                 continue
-            child = CNode(state=state, parent=node, action=action)
+            child = HeuristicNode(state=state, parent=node, action=action)
             child.cost = heuristic(child.state, goal)
             if child not in costs or  child.cost < costs[child]:
                 if child in costs:
@@ -126,7 +126,7 @@ def id_depth_first_search(**kwargs):
     num_explored = 0
     
 
-    start = CNode(state=start, parent=None, action=None, cost=0)
+    start = HeuristicNode(state=start, parent=None, action=None, cost=0)
 
     frontier = StackFrontier()
     frontier.add(start)
@@ -165,7 +165,7 @@ def id_depth_first_search(**kwargs):
         if node.cost <= depth:
             for action, state in actions(node.state):
                 if not frontier.contains_state(state) and state not in explored:
-                    child = CNode(state=state, parent=node, action=action)
+                    child = HeuristicNode(state=state, parent=node, action=action)
                     child.cost = child.cost_from_start + heuristic(child.state, goal)
                     frontier.add(child)
         else:
@@ -178,7 +178,7 @@ def iterative_deepening_a_star(**kwargs):
     heuristic = kwargs.get('heuristic', None)
     show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
     
-    root_node = CNode(state=start, parent=None, action=None, cost=0)
+    root_node = HeuristicNode(state=start, parent=None, action=None, cost=0)
     depth = root_node.cost
     solution = None
     while True:

@@ -17,17 +17,43 @@ class Node():
             node = node.parent
         return count
 
-class CNode():
+class HeuristicNode():
     """
     A node that keeps cost attribute too.
+    Tracks:
+    - cost_from_start: in problems where the cost of the path between two nodes equals to 1 (ex. moving on next tile in a maze)
+    - cost: estimated cost to the goal. It will be calculated by a heuristic function
     Used in informed search
     """
     def __init__(self, state, parent, action, cost=None):
         self.state = state
         self.parent = parent
         self.action = action
-        self.cost_from_start = CNode.find_depth(self)
+        self.cost_from_start = HeuristicNode.find_depth(self)
         self.cost = cost
+
+    @staticmethod
+    def find_depth(node):
+        count = 0
+        while node.parent is not None:
+            count += 1
+            node = node.parent
+        return count
+
+
+class WeightNode():
+    """
+    A node that keeps cost attribute too.
+    Tracks:
+    - cost_from_start: in problems where the cost is different on each paths. (ex. Weighted graphs)
+    Used in informed search
+    """
+    def __init__(self, state, parent, action, cost=None):
+        self.state = state
+        self.parent = parent
+        self.action = action
+        self.cost = cost
+
 
     @staticmethod
     def find_depth(node):
@@ -46,6 +72,9 @@ class StackFrontier():
 
     def contains_state(self, state):
         return any(node.state == state for node in self.frontier)
+
+    def contains_node(self, action, state):
+        return any(node.state == state and node.action == action for node in self.frontier)
 
     def empty(self):
         return len(self.frontier) == 0
