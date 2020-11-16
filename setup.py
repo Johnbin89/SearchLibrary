@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="search-jbin", # Replace with your own username
-    version="0.0.2",
+    version="0.0.3",
     author="jbin",
     author_email="john_biniaris@hotmail.com",
     description="A library of searh algorithms",
