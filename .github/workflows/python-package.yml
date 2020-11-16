@@ -39,4 +39,4 @@ jobs:
         pytest --cov=./
     - name: Upload to Codecov
       run: |
-        bash <(curl -s https://codecov.io/bash)
+        bash <(curl -s https://codecov.io/bash) -t ca69dc46-7db1-4069-b369-ff95d96ecb59
