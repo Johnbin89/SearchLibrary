@@ -4,7 +4,7 @@ A Maze representation to test implemented search algorithms
 
 
 import os, sys
-import pytest
+
 class Maze():
 
     def __init__(self, filename):
