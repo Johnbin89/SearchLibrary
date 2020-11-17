@@ -40,12 +40,11 @@ def depth_first_search(**kwargs):
             actions_to_goal.reverse()
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
-            print(solution)
+            #print(solution)
             if show_explored:
                 return solution, explored
             else:
                 return solution
-            #return solution
 
         
         explored.add(node.state)
@@ -108,7 +107,6 @@ def breadth_first_search(**kwargs):
 
 
 def iterative_deepening(**kwargs):
-    state_space = kwargs.get('state_space', None)
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)

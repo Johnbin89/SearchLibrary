@@ -38,7 +38,10 @@ def a_star(**kwargs):
             actions_to_goal.reverse()
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
-            return solution, explored if show_explored else solution
+            if show_explored:
+                return solution, explored
+            else:
+                return solution
             #return solution
         print("node state: {} , goal: {}".format(node.state, goal))
         print("Node cost: {}".format(node.cost))
@@ -92,7 +95,10 @@ def best_first_search(**kwargs):
             actions_to_goal.reverse()
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
-            return solution, explored if show_explored else solution
+            if show_explored:
+                return solution, explored
+            else:
+                return solution
             #return solution
         print("node state: {} , goal: {}".format(node.state, goal))
         print("Node cost: {}".format(node.cost))
