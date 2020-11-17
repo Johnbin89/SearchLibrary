@@ -46,7 +46,6 @@ class WeightNode():
     A node that keeps cost attribute too.
     Tracks:
     - cost_from_start: in problems where the cost is different on each paths. (ex. Weighted graphs)
-    Used in informed search
     """
     def __init__(self, state, parent, action, cost=None):
         self.state = state
@@ -126,7 +125,7 @@ class MyPriorityQueue(PriorityQueue):
     def remove_task(self, task):
         'Mark an existing task as REMOVED.  Raise KeyError if not found.'
         entry = self.entry_finder.pop(task)
-        entry[-1] = REMOVED
+        entry[-1] = self.REMOVED
 
     def pop_task(self):
         'Remove and return the lowest priority task. Raise KeyError if empty.'
