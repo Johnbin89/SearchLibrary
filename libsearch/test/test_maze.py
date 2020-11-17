@@ -3,14 +3,15 @@ A Maze representation to test implemented search algorithms
 """
 
 
-import sys
-
+import os, sys
+import pytest
 class Maze():
 
     def __init__(self, filename):
-
+        THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+        my_data_path = os.path.join(THIS_DIR, filename)
         # Read file and set height and width of maze
-        with open(filename) as f:
+        with open(my_data_path) as f:
             contents = f.read()
 
         # Validate start and goal
