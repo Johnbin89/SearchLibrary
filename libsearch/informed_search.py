@@ -7,6 +7,7 @@ def a_star(**kwargs):
     goal = kwargs.get('goal', None)
     heuristic = kwargs.get('heuristic', None)
     show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    count_states = kwargs.get('count_states', False) #if True it will return the number of explored states. num_explored
     
 
     num_explored = 0
@@ -38,11 +39,14 @@ def a_star(**kwargs):
             actions_to_goal.reverse()
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
-            if show_explored:
+            if show_explored and count_states:
+                return solution, num_explored, explored
+            elif show_explored:
                 return solution, explored
+            elif count_states:
+                return solution, num_explored
             else:
                 return solution
-            #return solution
         print("node state: {} , goal: {}".format(node.state, goal))
         print("Node cost: {}".format(node.cost))
         
@@ -64,6 +68,7 @@ def best_first_search(**kwargs):
     goal = kwargs.get('goal', None)
     heuristic = kwargs.get('heuristic', None)
     show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    count_states = kwargs.get('count_states', False) #if True it will return the number of explored states. num_explored
     
 
     num_explored = 0
@@ -95,11 +100,14 @@ def best_first_search(**kwargs):
             actions_to_goal.reverse()
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
-            if show_explored:
+            if show_explored and count_states:
+                return solution, num_explored, explored
+            elif show_explored:
                 return solution, explored
+            elif count_states:
+                return solution, num_explored
             else:
                 return solution
-            #return solution
         print("node state: {} , goal: {}".format(node.state, goal))
         print("Node cost: {}".format(node.cost))
         
@@ -107,7 +115,10 @@ def best_first_search(**kwargs):
             if state in explored:
                 continue
             child = HeuristicNode(state=state, parent=node, action=action)
+            #print("Child state: {}".format(child.state))
+            #print("goal: {}".format(goal))
             child.cost = heuristic(child.state, goal)
+            #print("Child cost: {}".format(child.cost))
             if child not in costs or  child.cost < costs[child]:
                 if child in costs:
                     frontier.remove_task(child)

@@ -6,6 +6,7 @@ def depth_first_search(**kwargs):
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
     show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    count_states = kwargs.get('count_states', False) #if True it will return the number of explored states. num_explored
     depth = kwargs.get('depth', None)   #this is used only when dfs is called in iterative deepening to a certain depth
     
     #print("Depth: {}".format(depth))
@@ -41,8 +42,12 @@ def depth_first_search(**kwargs):
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
             #print(solution)
-            if show_explored:
+            if show_explored and count_states:
+                return solution, num_explored, explored
+            elif show_explored:
                 return solution, explored
+            elif count_states:
+                return solution, num_explored
             else:
                 return solution
 
@@ -68,7 +73,8 @@ def breadth_first_search(**kwargs):
     actions = kwargs.get('actions', None)
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
-    #show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    count_states = kwargs.get('count_states', False) #if True it will return the number of explored states. num_explored
 
     num_explored = 0
     start = Node(state=start, parent=None, action=None)
@@ -95,7 +101,14 @@ def breadth_first_search(**kwargs):
             actions_to_goal.reverse()
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
-            return solution
+            if show_explored and count_states:
+                return solution, num_explored, explored
+            elif show_explored:
+                return solution, explored
+            elif count_states:
+                return solution, num_explored
+            else:
+                return solution
         
         explored.add(node.state)
 
@@ -127,19 +140,25 @@ def branch_and_bound(**kwargs):
     goal = kwargs.get('goal', None)
     path_cost = kwargs.get('path_cost', None)
     show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
+    count_states = kwargs.get('count_states', False) #if True it will return the number of explored states. num_explored
 
     start = WeightNode(state=start, parent=None, action=None, cost=0)
     frontier = QueueFrontier()
     frontier.add(start)
     explored = set()
+    num_explored = 0
     best_cost = float('inf')
     best_solution = None
     print("Branch and Bound:")
     while True:
 
         if frontier.empty():
-            if show_explored:
+            if show_explored and count_states:
+                return best_solution, num_explored, explored
+            elif show_explored:
                 return best_solution, explored
+            elif count_states:
+                return best_solution, num_explored
             else:
                 return best_solution
 
@@ -147,6 +166,7 @@ def branch_and_bound(**kwargs):
         #node.cost = node.parent.cost + path_cost(node.parent.state + node.state)
         print("Pickedup:",node.action, node.state, node.cost)
         if node.cost < best_cost:
+            num_explored += 1
             print('found node with less cost')
             if node.state == goal and node.parent:
                 print("solution found")
