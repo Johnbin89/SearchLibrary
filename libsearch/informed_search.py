@@ -18,13 +18,13 @@ def a_star(**kwargs):
     costs[start] = start.cost
     
     explored = set()
-
+    print("A Star:")
     while True:
         if frontier.empty():
             return None
     
         node = frontier.pop_task()
-        print(node)
+        #print(node)
         num_explored += 1
         explored.add(node.state)
 
@@ -75,13 +75,13 @@ def best_first_search(**kwargs):
     costs[start] = start.cost
     
     explored = set()
-
+    print("Best First Search:")
     while True:
         if frontier.empty():
             return None
     
         node = frontier.pop_task()
-        print(node)
+        #print(node)
         num_explored += 1
         explored.add(node.state)
 
@@ -159,7 +159,7 @@ def id_depth_first_search(**kwargs):
             actions_to_goal.reverse()
             states_to_goal.reverse()
             solution = (actions_to_goal, states_to_goal)
-            print(solution)
+            #print(solution)
             if show_explored:
                 return solution, explored
             else:
@@ -187,6 +187,7 @@ def iterative_deepening_a_star(**kwargs):
     root_node = HeuristicNode(state=start, parent=None, action=None, cost=0)
     depth = root_node.cost
     solution = None
+    print("Iterative Deepening with A Star:")
     while True:
         solution = id_depth_first_search(actions=actions, start=start, goal=goal, depth=depth, heuristic=heuristic, show_explored=show_explored)
         if isinstance(solution, int):
@@ -194,5 +195,5 @@ def iterative_deepening_a_star(**kwargs):
             print("Depth id: {}".format(depth))
         else:
             break
-    print(solution)
+    #print(solution)
     return solution

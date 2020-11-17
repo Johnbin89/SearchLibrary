@@ -20,7 +20,7 @@ def depth_first_search(**kwargs):
     frontier = StackFrontier()
     frontier.add(start)
     explored = set()
-    print("dfs in pip")
+    print("Depth First Search:")
     while True:
 
         if frontier.empty():
@@ -75,7 +75,7 @@ def breadth_first_search(**kwargs):
     frontier = QueueFrontier()
     frontier.add(start)
     explored = set()
-
+    print("Breadth First Search:")
     while True:
 
         if frontier.empty():
@@ -111,13 +111,13 @@ def iterative_deepening(**kwargs):
     start = kwargs.get('start', None)
     goal = kwargs.get('goal', None)
     show_explored = kwargs.get('show_explored', False) #if True it will return the explored(closed) set too.
-    
+    print("Iterative deepening:")
     depth = 1
     solution = None
     while solution == None:
         solution = depth_first_search(actions=actions, start=start, goal=goal, depth=depth, show_explored=show_explored)
         depth += 1
-    print(solution)
+    #print(solution)
     return solution
 
 
@@ -134,6 +134,7 @@ def branch_and_bound(**kwargs):
     explored = set()
     best_cost = float('inf')
     best_solution = None
+    print("Branch and Bound:")
     while True:
 
         if frontier.empty():
@@ -146,7 +147,7 @@ def branch_and_bound(**kwargs):
         #node.cost = node.parent.cost + path_cost(node.parent.state + node.state)
         print("Pickedup:",node.action, node.state, node.cost)
         if node.cost < best_cost:
-            print('inside')
+            print('found node with less cost')
             if node.state == goal and node.parent:
                 print("solution found")
                 best_cost = node.cost
