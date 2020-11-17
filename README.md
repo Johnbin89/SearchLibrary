@@ -1,11 +1,10 @@
-# Example Package
+libsearch | ![build](https://github.com/Johnbin89/SearchLibrary/workflows/Build%20Package/badge.svg)
+[![codecov](https://codecov.io/gh/Johnbin89/SearchLibrary/branch/master/graph/badge.svg?token=PQ74UIDAS9)](https://codecov.io/gh/Johnbin89/SearchLibrary)
+===============================================================================
+
+bla bla
 
 pip install -e ~/Documents/PythonWorkspaces/AI/SEARCH/general_solution
 
 example:
 from libsearch import depth_first_search 
-
-
-This is a simple example package. You can use
-[Github-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
-to write your content.
