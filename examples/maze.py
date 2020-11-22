@@ -7,6 +7,12 @@ pip install pillow
 or
 
 pip install -r requirements.txt
+ 
+It will output a .png image with the solution path in the Maze (yellow color).
+If show_explored=True is given as argument into algorithm function, 
+it will show other paths followed( RED color) before finding the solution path
+
+Usage: python maze.py maze.txt
 """
 
 
@@ -20,8 +26,8 @@ class Maze():
     """
 
     def __init__(self, filename):
-        THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-        my_data_path = os.path.join(THIS_DIR, filename)
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        my_data_path = os.path.join(this_dir, filename)
         # Read file and set height and width of maze
         with open(my_data_path) as f:
             contents = f.read()
