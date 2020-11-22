@@ -187,6 +187,7 @@ print("Maze:")
 m.print()
 print("Solving...")
 
+##Comment out or uncomment ''' to try the algorithms below:
 
 #example of uninformed search
 
@@ -211,8 +212,6 @@ print("Graphic Solution (A Star):")
 m.print()
 m.output_image("informed_a_star.png", show_explored=True)
 '''
-
-
 
 '''
 ## using best_first_search and return number of explored states(num_explored) and closed frontier(explored) along with solution
