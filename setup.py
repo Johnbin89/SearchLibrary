@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="libsearch", # Replace with your own username
-    version="0.0.5",
+    version="0.0.5.post1",
     author="Ioannis Biniaris",
     author_email="john_biniaris@hotmail.com",
     description="A library of searh algorithms",
