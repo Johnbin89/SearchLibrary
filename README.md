@@ -79,15 +79,15 @@ show_explored=True           #if True it will return the explored(closed) set to
 ```
 
 #### Solution
-The **solution** returned by algorithms is a python **Set** consisting of **(list_of_actions, list_of_states)**.
+The **solution** returned by algorithms is a python **Set** consisting of **(list_of_actions, list_of_states)**.  
 _list_of_actions_: the actions it took to reach each State on the path to Goal State
 _list_of_states_: the path to the Goal State from Initial State
 
 ## Example
 
-Usage of Branch and Bound algorithm for the well-known algorithmic problem [Traveling Salesman (TSP)](https://en.wikipedia.org/wiki/Travelling_salesman_problem)
+Usage of Branch and Bound algorithm for the well-known algorithmic problem [Traveling Salesman (TSP)](https://en.wikipedia.org/wiki/Travelling_salesman_problem).  
 In the following Complete Weighted Graph figure each city is represented by a letter and each path has a path cost:
-![TSP Graph](examples/TSPGraph.png)
+![TSP Graph](examples/TSPGraph.png){:height="75%" width="75%"}
 
 We use a Dictionary to implement this Graph in python:
 ```python
