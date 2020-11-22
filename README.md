@@ -33,7 +33,7 @@ The following algorithms are supported.
 Install the latest version with:
 
 ```shell
-pip install -U libsearch
+pip install libsearch
 ```
 ## Usage  
 
@@ -87,7 +87,8 @@ _list_of_states_: the path to the Goal State from Initial State
 
 Usage of Branch and Bound algorithm for the well-known algorithmic problem [Traveling Salesman (TSP)](https://en.wikipedia.org/wiki/Travelling_salesman_problem).  
 In the following Complete Weighted Graph figure each city is represented by a letter and each path has a path cost:
-![TSP Graph](examples/TSPGraph.png){:height="60%" width="60%"}
+
+<img src="examples/TSPGraph.png" width="700">
 
 We use a Dictionary to implement this Graph in python:
 ```python
@@ -131,6 +132,3 @@ More details on the implementation of _fullneighbors_ function which return chil
 This implementation of search algorithms as functions can be used virtually in any problem that can be defined as a search in a State Space, as long as the User will define the **actions** function to generate new State from an existing one and in case of Heuristic Search a **heuristic function** to estimate the cost of reaching the Goal State.
 
 In examples folder you can experiment with different algorithms on a Maze problem [maze.py](examples/maze.py).
-
-
-pip install --index-url https://test.pypi.org/simple/ --no-deps search-jbin
