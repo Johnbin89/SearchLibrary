@@ -88,7 +88,7 @@ _list_of_states_: the path to the Goal State from Initial State
 Usage of Branch and Bound algorithm for the well-known algorithmic problem [Traveling Salesman (TSP)](https://en.wikipedia.org/wiki/Travelling_salesman_problem).  
 In the following Complete Weighted Graph figure each city is represented by a letter and each path has a path cost:
 
-<img src="examples/TSPGraph.png" width="700">
+<img src="https://github.com/Johnbin89/SearchLibrary/raw/master/examples/TSPGraph.png" width="700">
 
 We use a Dictionary to implement this Graph in python:
 ```python
