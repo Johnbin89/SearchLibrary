@@ -1,5 +1,17 @@
-import os, sys
+"""
+For function output_image to work and export the solution in a maze drawing in .png 
+you should install pillow first in your environment.
 
+pip install pillow
+
+or
+
+pip install -r requirements.txt
+"""
+
+
+
+import os, sys
 
 class Maze():
     """
@@ -172,7 +184,7 @@ print("Solving...")
 
 #example of uninformed search
 
-from libsearch import depth_first_search, breadth_first_search, iterative_deepening, branch_and_bound
+from libsearch import breadth_first_search
 ## using breadth_first_search and return number of explored states(num_explored) and closed frontier(explored) along with solution
 m.solution, m.num_explored, m.explored = breadth_first_search(actions=m.neighbors, start=m.start, goal=m.goal, count_states=True, show_explored=True)
 print(50*"*")
@@ -183,7 +195,7 @@ m.output_image("blind_breadth_fs.png", show_explored=True)
 
 #example for informed search
 '''
-from libsearch import a_star, best_first_search, iterative_deepening_a_star
+from libsearch import a_star, best_first_search
 ## using a_star and return number of explored states(num_explored) and closed frontier(explored) along with solution
 m.solution, m.num_explored, m.explored = a_star(actions=m.neighbors, start=m.start, goal=m.goal, heuristic=m.manhattan_distance, count_states=True, show_explored=True)
 print(50*"*")
@@ -197,7 +209,7 @@ m.output_image("informed_a_star.png", show_explored=True)
 
 
 '''
-## using a_star and return number of explored states(num_explored) and closed frontier(explored) along with solution
+## using best_first_search and return number of explored states(num_explored) and closed frontier(explored) along with solution
 m.solution, m.num_explored, m.explored = best_first_search(actions=m.neighbors, start=m.start, goal=m.goal, heuristic=m.manhattan_distance, count_states=True, show_explored=True)
 print(50*"*")
 print("Solution variable: {}".format(m.solution))
