@@ -62,9 +62,10 @@ class WeightNode():
             node = node.parent
         return count
 
+from collections import deque
 class StackFrontier():
     def __init__(self):
-        self.frontier = []
+        self.frontier = deque()
 
     def add(self, node):
         self.frontier.append(node)
@@ -82,9 +83,7 @@ class StackFrontier():
         if self.empty():
             raise Exception("empty frontier")
         else:
-            node = self.frontier[-1]
-            self.frontier = self.frontier[:-1]
-            return node
+            return self.frontier.pop()
 
 
 class QueueFrontier(StackFrontier):
@@ -93,9 +92,7 @@ class QueueFrontier(StackFrontier):
         if self.empty():
             raise Exception("empty frontier")
         else:
-            node = self.frontier[0]
-            self.frontier = self.frontier[1:]
-            return node
+            return self.frontier.popleft()
 
 from queue import PriorityQueue
 import itertools

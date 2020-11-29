@@ -1,4 +1,4 @@
-from .data_structs import Node, WeightNode, StackFrontier, QueueFrontier
+from .data_structures import Node, WeightNode, StackFrontier, QueueFrontier
 
 
 def depth_first_search(**kwargs):

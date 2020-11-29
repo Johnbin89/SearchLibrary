@@ -1,4 +1,4 @@
-from .data_structs import HeuristicNode, MyPriorityQueue, StackFrontier
+from .data_structures import HeuristicNode, MyPriorityQueue, StackFrontier
 
 
 def a_star(**kwargs):
