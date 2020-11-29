@@ -97,7 +97,7 @@ class QueueFrontier(StackFrontier):
 from queue import PriorityQueue
 import itertools
 from heapq import heappush, heappop
-class MyPriorityQueue(PriorityQueue):
+class ModPriorityQueue(PriorityQueue):
     """
     https://docs.python.org/2/library/heapq.html#priority-queue-implementation-notes
     """

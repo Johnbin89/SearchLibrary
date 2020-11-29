@@ -1,4 +1,4 @@
-from .data_structures import HeuristicNode, MyPriorityQueue, StackFrontier
+from .data_structures import HeuristicNode, ModPriorityQueue, StackFrontier
 
 
 def a_star(**kwargs):
@@ -13,7 +13,7 @@ def a_star(**kwargs):
     num_explored = 0
     start = HeuristicNode(state=start, parent=None, action=None, cost=0)
     
-    frontier = MyPriorityQueue()
+    frontier = ModPriorityQueue()
     costs = {}
     frontier.add_task(start, start.cost)
     costs[start] = start.cost
@@ -74,7 +74,7 @@ def best_first_search(**kwargs):
     num_explored = 0
     start = HeuristicNode(state=start, parent=None, action=None, cost=0)
     
-    frontier = MyPriorityQueue()
+    frontier = ModPriorityQueue()
     costs = {}
     frontier.add_task(start, start.cost)
     costs[start] = start.cost
