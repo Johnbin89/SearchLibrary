@@ -1,6 +1,7 @@
 libsearch | ![build](https://github.com/Johnbin89/SearchLibrary/workflows/Build%20Package/badge.svg)
 ![build](https://github.com/Johnbin89/SearchLibrary/workflows/Flake8/badge.svg)
 [![codecov](https://codecov.io/gh/Johnbin89/SearchLibrary/branch/master/graph/badge.svg?token=PQ74UIDAS9)](https://codecov.io/gh/Johnbin89/SearchLibrary)
+![Pepy Total Downlods](https://img.shields.io/pepy/dt/libsearch)
 ===============================================================================
 
 ## Description
