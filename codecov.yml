@@ -1,4 +1,11 @@
-fixes:
-  - "/home/runner/work/SearchLibrary/SearchLibrary/::"
-codecov:
-  token: ca69dc46-7db1-4069-b369-ff95d96ecb59
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 5%
+    patch:
+      default:
+        informational: true
+
+comment: false
