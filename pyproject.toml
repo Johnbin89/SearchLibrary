@@ -35,6 +35,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = []
@@ -82,3 +83,14 @@ testpaths = ["libsearch/test"]
 [tool.ruff]
 target-version = "py39"
 line-length = 127
+
+# The ruleset is pinned explicitly rather than left to ruff's defaults, so a
+# ruff upgrade cannot fail CI on code that has not changed. This mirrors what
+# the old flake8 job hard-failed on: syntax errors, broken comparisons,
+# misplaced statements and undefined names.
+#
+# The wider default set currently reports 85 style findings (mostly
+# str.format -> f-string). Those are worth a dedicated cleanup pass; widening
+# this list is how to start it.
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
