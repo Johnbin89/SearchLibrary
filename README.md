@@ -1,7 +1,7 @@
-libsearch | ![build](https://github.com/Johnbin89/SearchLibrary/workflows/Build%20Package/badge.svg)
-![build](https://github.com/Johnbin89/SearchLibrary/workflows/Flake8/badge.svg)
+libsearch | [![CI](https://github.com/Johnbin89/SearchLibrary/actions/workflows/ci.yml/badge.svg)](https://github.com/Johnbin89/SearchLibrary/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/Johnbin89/SearchLibrary/branch/master/graph/badge.svg?token=PQ74UIDAS9)](https://codecov.io/gh/Johnbin89/SearchLibrary)
-![Pepy Total Downlods](https://img.shields.io/pepy/dt/libsearch)
+[![PyPI](https://img.shields.io/pypi/v/libsearch)](https://pypi.org/project/libsearch/)
+[![Downloads](https://img.shields.io/pepy/dt/libsearch)](https://pepy.tech/project/libsearch)
 ===============================================================================
 
 ## Description
@@ -128,9 +128,9 @@ solution, num_explored = branch_and_bound(actions=g.fullneighbors, start='A', go
 
 Checking the value of num_explored we can see that 68 States(path combined) were explored before reaching the Goal.  
 
-More details on the implementation of _fullneighbors_ function which return child States for the specific TSP problem and the path_cost function which return the cost assigned to each path, can be found on [graph.py](examples/graph.py) in examples folder.
+More details on the implementation of _fullneighbors_ function which return child States for the specific TSP problem and the path_cost function which return the cost assigned to each path, can be found on [graph.py](https://github.com/Johnbin89/SearchLibrary/blob/master/examples/graph.py) in examples folder.
 
 ## Notes 
 This implementation of search algorithms as functions can be used virtually in any problem that can be defined as a search in a State Space, as long as the User will define the **actions** function to generate new State from an existing one and in case of Heuristic Search a **heuristic function** to estimate the cost of reaching the Goal State.
 
-In examples folder you can experiment with different algorithms on a Maze problem [maze.py](examples/maze.py).
+In examples folder you can experiment with different algorithms on a Maze problem [maze.py](https://github.com/Johnbin89/SearchLibrary/blob/master/examples/maze.py).
