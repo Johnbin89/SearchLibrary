@@ -1,10 +1,13 @@
 [build-system]
-requires = ["hatchling>=1.27", "hatch-vcs"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
 name = "libsearch"
-dynamic = ["version"]
+# Kept in step with the git tag by the version-guard step in
+# .github/workflows/release.yml, which refuses to release when the tag and
+# this value disagree. Bump this and run `uv lock` before tagging.
+version = "0.1.0"
 description = "A library of search algorithms"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -56,12 +59,6 @@ dev = [
     "pytest-cov>=4",
     "ruff>=0.6",
 ]
-
-# Version is derived from the git tag, so the tag and the published
-# version can never drift apart. With no tags yet, builds report a
-# development version such as 0.1.dev1+g52e833d.
-[tool.hatch.version]
-source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["libsearch"]

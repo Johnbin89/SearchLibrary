@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+project_name: libsearch
+
+before:
+  hooks:
+    # A tag that cannot pass its own tests must not become a release.
+    - uv sync --locked
+    - uv run pytest
+
+# The uv builder reads the version from [project] version in pyproject.toml.
+# It does not support dynamic versioning, which is why that field is static
+# and guarded against the tag in the release workflow.
+builds:
+  - id: wheel
+    builder: uv
+    buildmode: wheel
+  - id: sdist
+    builder: uv
+    buildmode: sdist
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      # This repository does not use Conventional Commits, so prefix-based
+      # groups would match nothing. Merge commits are the only real noise.
+      - "^Merge branch"
+      - "^Merge pull request"
+
+release:
+  github:
+    owner: Johnbin89
+    name: SearchLibrary
+  draft: false
+  # Tags such as v0.1.0-rc1 are marked as pre-releases automatically.
+  prerelease: auto

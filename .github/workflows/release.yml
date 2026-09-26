@@ -1,0 +1,122 @@
+name: Release
+
+on:
+  push:
+    tags: [ "v*" ]
+
+permissions:
+  contents: read
+
+jobs:
+  # Refuses to go further when the tag and pyproject.toml disagree, so a
+  # mismatch is a failed run rather than an unfixable PyPI upload.
+  guard:
+    name: verify tag matches pyproject version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Compare versions
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          uv run --with packaging python - <<'PY'
+          import os, sys, tomllib
+          from packaging.version import Version
+
+          tag = os.environ["TAG"].removeprefix("v")
+          project = tomllib.load(open("pyproject.toml", "rb"))["project"]["version"]
+
+          # PEP 440 normalisation lets a semver-style tag such as 0.1.0-rc1
+          # compare equal to the 0.1.0rc1 that pyproject.toml must carry.
+          if Version(tag) != Version(project):
+              sys.exit(f"tag {tag!r} != pyproject.toml version {project!r}")
+          print(f"ok: tag {tag} matches pyproject.toml {project}")
+          PY
+
+  release:
+    name: build and publish GitHub release
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # GoReleaser needs the full history to build a changelog.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist/wheel_none-any/*.whl
+            dist/sdist_none-any/*.tar.gz
+
+  # Pre-release tags (v0.1.0-rc1) rehearse against TestPyPI.
+  publish-testpypi:
+    name: publish to TestPyPI
+    needs: release
+    if: contains(github.ref_name, '-rc')
+    runs-on: ubuntu-latest
+    environment: testpypi
+    permissions:
+      id-token: write   # mints the OIDC token for Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Publish
+        run: |
+          uv publish \
+            --publish-url https://test.pypi.org/legacy/ \
+            --check-url https://test.pypi.org/simple/libsearch/ \
+            dist/**/*.whl dist/**/*.tar.gz
+
+  # Final tags (v0.1.0) go to the real index.
+  publish-pypi:
+    name: publish to PyPI
+    needs: release
+    if: ${{ !contains(github.ref_name, '-rc') }}
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      # No credentials: Trusted Publishing exchanges the OIDC token for a
+      # short-lived upload token. --check-url makes a re-run idempotent.
+      - name: Publish
+        run: |
+          uv publish \
+            --check-url https://pypi.org/simple/libsearch/ \
+            dist/**/*.whl dist/**/*.tar.gz
