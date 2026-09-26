@@ -7,7 +7,7 @@ name = "libsearch"
 # Kept in step with the git tag by the version-guard step in
 # .github/workflows/release.yml, which refuses to release when the tag and
 # this value disagree. Bump this and run `uv lock` before tagging.
-version = "0.1.0rc1"
+version = "0.1.0"
 description = "A library of search algorithms"
 readme = "README.md"
 requires-python = ">=3.9"
