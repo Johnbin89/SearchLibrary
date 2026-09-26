@@ -74,16 +74,41 @@ iterative_deepening_a_star(actions=actions, start=InitialState, goal=GoalState, 
 ```
 
 #### (Optional arguments)
-_For evaluation purposes the following can be set as arguments alonside the required above to return the number of explored states or/and the states the algorithms explored before reaching the solution._
+_For evaluation purposes the following can be set alongside the required arguments above, to return extra information about how the search progressed._
 ```python
 count_states=True            #if True it will return the number of explored states too. num_explored
 show_explored=True           #if True it will return the explored(closed) set too.
+show_revisited=True          #if True it will return the States reached again after being closed.
+show_frontier_rate=True      #if True it will return the size of the frontier at each iteration.
 ```
 
+Not every algorithm supports every argument:
+
+| Argument | Available on |
+| --- | --- |
+| `show_explored` | all algorithms |
+| `count_states` | all except `iterative_deepening` and `iterative_deepening_a_star` |
+| `show_frontier_rate` | all except `branch_and_bound` |
+| `show_revisited` | `a_star` and `best_first_search` only |
+
+For `iterative_deepening` and `iterative_deepening_a_star`, `show_frontier_rate` describes the depth-limited pass that found the solution, not all passes combined.
+
 #### Solution
-The **solution** returned by algorithms is a python **Set** consisting of **(list_of_actions, list_of_states)**.  
+The **solution** returned by algorithms is a python **tuple** consisting of **(list_of_actions, list_of_states)**.  
 _list_of_actions_: the actions it took to reach each State on the path to Goal State  
 _list_of_states_: the path to the Goal State from Initial State
+
+Each optional argument you request appends one more value to what is returned, always in the same order: _num_explored_, _explored_, _revisited_, _frate_. So they can be combined freely:
+
+```python
+solution = a_star(actions=actions, start=InitialState, goal=GoalState, heuristic=heuristic)
+
+solution, num_explored = a_star(actions=actions, start=InitialState, goal=GoalState,
+                                heuristic=heuristic, count_states=True)
+
+solution, explored, frate = a_star(actions=actions, start=InitialState, goal=GoalState,
+                                   heuristic=heuristic, show_explored=True, show_frontier_rate=True)
+```
 
 ## Example
 
@@ -120,7 +145,7 @@ If we were to print _solution_ we would get the following:
 ```
 The first list are the actions (moving from each letter(State) to the next one) and the latter is a list of States representing the path to reach the Goal State "A", whereas in our case it is the same as the Initial State as described in TSP problem.
 
-##### Optinal arguments
+##### Optional arguments
 If we wish to see how many states the branch and bound algorithm explored:
  ```python
 solution, num_explored = branch_and_bound(actions=g.fullneighbors, start='A', goal='A', path_cost=g.path_cost, count_states=True)

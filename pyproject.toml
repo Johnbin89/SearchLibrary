@@ -7,7 +7,7 @@ name = "libsearch"
 # Kept in step with the git tag by the version-guard step in
 # .github/workflows/release.yml, which refuses to release when the tag and
 # this value disagree. Bump this and run `uv lock` before tagging.
-version = "0.1.0"
+version = "0.1.0rc1"
 description = "A library of search algorithms"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -47,6 +47,8 @@ dependencies = []
 Homepage = "https://github.com/Johnbin89/SearchLibrary"
 Repository = "https://github.com/Johnbin89/SearchLibrary"
 Issues = "https://github.com/Johnbin89/SearchLibrary/issues"
+# PyPI gives a recognised "Changelog" label its own entry in the sidebar.
+Changelog = "https://github.com/Johnbin89/SearchLibrary/blob/master/CHANGELOG.md"
 
 [project.optional-dependencies]
 # Only the maze visualiser in examples/ needs this; the library itself has
@@ -70,6 +72,7 @@ include = [
     "libsearch",
     "examples",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE",
     ".coveragerc",
 ]
@@ -90,4 +93,4 @@ line-length = 127
 # str.format -> f-string). Those are worth a dedicated cleanup pass; widening
 # this list is how to start it.
 [tool.ruff.lint]
-select = ["E9", "F63", "F7", "F82"]
+select = ["E7", "E9", "F63", "F7", "F82"]

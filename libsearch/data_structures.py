@@ -1,13 +1,13 @@
 import itertools
 
-class Node():
+
+class Node:
     def __init__(self, state, parent, action, enable_depth=False):
         self.state = state
         self.parent = parent
         self.action = action
         if enable_depth:
             self.depth = Node.find_depth(self)
-
 
     @staticmethod
     def find_depth(node):
@@ -17,7 +17,8 @@ class Node():
             node = node.parent
         return count
 
-class HeuristicNode():
+
+class HeuristicNode:
     """
     A node that keeps cost attribute too.
     Tracks:
@@ -25,7 +26,8 @@ class HeuristicNode():
     - cost: estimated cost to the goal. It will be calculated by a heuristic function
     Used in informed search
     """
-    def __init__(self, state, parent, action, cost=None):
+
+    def __init__(self, state, parent, action, cost: float = 0):
         self.state = state
         self.parent = parent
         self.action = action
@@ -41,18 +43,18 @@ class HeuristicNode():
         return count
 
 
-class WeightNode():
+class WeightNode:
     """
     A node that keeps cost attribute too.
     Tracks:
     - cost_from_start: in problems where the cost is different on each paths. (ex. Weighted graphs)
     """
-    def __init__(self, state, parent, action, cost=None):
+
+    def __init__(self, state, parent, action, cost: float = 0):
         self.state = state
         self.parent = parent
         self.action = action
         self.cost = cost
-
 
     @staticmethod
     def find_depth(node):
@@ -62,8 +64,11 @@ class WeightNode():
             node = node.parent
         return count
 
+
 from collections import deque
-class StackFrontier():
+
+
+class StackFrontier:
     def __init__(self):
         self.frontier = deque()
 
@@ -79,56 +84,67 @@ class StackFrontier():
     def empty(self):
         return len(self.frontier) == 0
 
+    def len(self):
+        return len(self.frontier)
+
     def remove(self):
         if self.empty():
             raise Exception("empty frontier")
         else:
             return self.frontier.pop()
 
+    def contents(self):
+        for node in self.frontier:
+            print("Action: {}, State: {}".format(node.action, node.state))
+
 
 class QueueFrontier(StackFrontier):
-
     def remove(self):
         if self.empty():
             raise Exception("empty frontier")
         else:
             return self.frontier.popleft()
 
-from queue import PriorityQueue
+
 import itertools
-from heapq import heappush, heappop
+from heapq import heappop, heappush
+from queue import PriorityQueue
+
+
 class ModPriorityQueue(PriorityQueue):
     """
     https://docs.python.org/2/library/heapq.html#priority-queue-implementation-notes
     """
 
     def _init(self, maxsize):
-        self.queue = []                         # list of entries arranged in a heap
-        self.entry_finder = {}               # mapping of tasks to entries
-        self.REMOVED = '<removed-task>'      # placeholder for a removed task
-        self.counter = itertools.count()     # unique sequence count
+        self.queue = []  # list of entries arranged in a heap
+        self.entry_finder = {}  # mapping of tasks to entries
+        self.REMOVED = "<removed-task>"  # placeholder for a removed task
+        self.counter = itertools.count()  # unique sequence count
 
-    
-    def add_task(self, task, priority=0):
-        'Add a new task or update the priority of an existing task'
+    def add_task(self, task, priority: float = 0):
+        "Add a new task or update the priority of an existing task"
         if task in self.entry_finder:
             self.remove_task(task)
         count = next(self.counter)
         entry = (priority, count, task)
-        print("entry: {}".format(entry) )
+        print("entry: {}".format(entry))
         self.entry_finder[task] = entry
         heappush(self.queue, entry)
 
     def remove_task(self, task):
-        'Mark an existing task as REMOVED.  Raise KeyError if not found.'
+        "Mark an existing task as REMOVED.  Raise KeyError if not found."
         entry = self.entry_finder.pop(task)
         entry[-1] = self.REMOVED
 
     def pop_task(self):
-        'Remove and return the lowest priority task. Raise KeyError if empty.'
+        "Remove and return the lowest priority task. Raise KeyError if empty."
         while self.queue:
             priority, count, task = heappop(self.queue)
             if task is not self.REMOVED:
                 del self.entry_finder[task]
                 return task
-        raise KeyError('pop from an empty priority queue')
+        raise KeyError("pop from an empty priority queue")
+
+    def len(self):
+        return len(self.queue)

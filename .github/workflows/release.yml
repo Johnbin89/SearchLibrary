@@ -54,12 +54,47 @@ jobs:
         with:
           enable-cache: true
 
+      # The GitHub Release body comes from CHANGELOG.md rather than from commit
+      # subjects. Fails loudly when the tag has no section, so a release cannot
+      # go out with empty notes.
+      - name: Extract release notes from CHANGELOG.md
+        env:
+          TAG: ${{ github.ref_name }}
+          OUT: ${{ runner.temp }}/release-notes.md
+        run: |
+          uv run --with packaging python - <<'PY'
+          import os, re, sys
+          from packaging.version import Version
+
+          tag = os.environ["TAG"]
+          version = Version(tag.removeprefix("v"))
+          text = open("CHANGELOG.md", encoding="utf-8").read()
+
+          def section(label):
+              match = re.search(
+                  r"^##\s*\[" + re.escape(label) + r"\][^\n]*\n(.*?)(?=^##\s*\[|\Z)",
+                  text,
+                  re.S | re.M,
+              )
+              return match.group(1).strip() if match else None
+
+          # A pre-release such as v0.1.0-rc1 falls back to the 0.1.0 section,
+          # since an rc previews the release it is rehearsing.
+          body = section(str(version)) or section(version.base_version)
+          if not body:
+              sys.exit(f"CHANGELOG.md has no section for {version} or {version.base_version}")
+
+          with open(os.environ["OUT"], "w", encoding="utf-8") as handle:
+              handle.write(body + "\n")
+          print(body)
+          PY
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean
+          args: release --clean --release-notes=${{ runner.temp }}/release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

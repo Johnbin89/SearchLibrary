@@ -20,6 +20,8 @@ builds:
     builder: uv
     buildmode: sdist
 
+# The release workflow passes --release-notes with the CHANGELOG.md section for
+# the tag, which bypasses this block. It still applies to local snapshot runs.
 changelog:
   use: github
   sort: asc
