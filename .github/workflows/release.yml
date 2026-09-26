@@ -8,10 +8,11 @@ permissions:
   contents: read
 
 jobs:
-  # Refuses to go further when the tag and pyproject.toml disagree, so a
-  # mismatch is a failed run rather than an unfixable PyPI upload.
+  # Everything that can invalidate a release is checked here, before anything is
+  # built or uploaded, so a bad tag costs one short failed job rather than a
+  # half-finished release or an unfixable PyPI upload.
   guard:
-    name: verify tag matches pyproject version
+    name: pre-flight checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +20,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      - name: Compare versions
+      - name: Tag matches pyproject version
         env:
           TAG: ${{ github.ref_name }}
         run: |
@@ -36,6 +37,11 @@ jobs:
               sys.exit(f"tag {tag!r} != pyproject.toml version {project!r}")
           print(f"ok: tag {tag} matches pyproject.toml {project}")
           PY
+
+      # Prints the notes so the release body can be read here, before the
+      # deployment approval, rather than discovered afterwards.
+      - name: CHANGELOG.md has a section for this tag
+        run: uv run --with packaging python .github/scripts/release_notes.py "${{ github.ref_name }}"
 
   release:
     name: build and publish GitHub release
@@ -54,40 +60,12 @@ jobs:
         with:
           enable-cache: true
 
-      # The GitHub Release body comes from CHANGELOG.md rather than from commit
-      # subjects. Fails loudly when the tag has no section, so a release cannot
-      # go out with empty notes.
+      # Already validated by the guard job; this writes the file GoReleaser uses
+      # as the GitHub Release body, in place of commit subjects.
       - name: Extract release notes from CHANGELOG.md
-        env:
-          TAG: ${{ github.ref_name }}
-          OUT: ${{ runner.temp }}/release-notes.md
         run: |
-          uv run --with packaging python - <<'PY'
-          import os, re, sys
-          from packaging.version import Version
-
-          tag = os.environ["TAG"]
-          version = Version(tag.removeprefix("v"))
-          text = open("CHANGELOG.md", encoding="utf-8").read()
-
-          def section(label):
-              match = re.search(
-                  r"^##\s*\[" + re.escape(label) + r"\][^\n]*\n(.*?)(?=^##\s*\[|\Z)",
-                  text,
-                  re.S | re.M,
-              )
-              return match.group(1).strip() if match else None
-
-          # A pre-release such as v0.1.0-rc1 falls back to the 0.1.0 section,
-          # since an rc previews the release it is rehearsing.
-          body = section(str(version)) or section(version.base_version)
-          if not body:
-              sys.exit(f"CHANGELOG.md has no section for {version} or {version.base_version}")
-
-          with open(os.environ["OUT"], "w", encoding="utf-8") as handle:
-              handle.write(body + "\n")
-          print(body)
-          PY
+          uv run --with packaging python .github/scripts/release_notes.py \
+            "${{ github.ref_name }}" --out "${{ runner.temp }}/release-notes.md"
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v7
