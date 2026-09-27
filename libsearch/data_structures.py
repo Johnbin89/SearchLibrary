@@ -1,13 +1,10 @@
-import itertools
-
-
 class Node:
     def __init__(self, state, parent, action, enable_depth=False):
         self.state = state
         self.parent = parent
         self.action = action
         if enable_depth:
-            self.depth = Node.find_depth(self)
+            self.depth = parent.depth + 1 if parent else 0
 
     @staticmethod
     def find_depth(node):
@@ -31,7 +28,7 @@ class HeuristicNode:
         self.state = state
         self.parent = parent
         self.action = action
-        self.cost_from_start = HeuristicNode.find_depth(self)
+        self.cost_from_start = parent.cost_from_start + 1 if parent else 0
         self.cost = cost
 
     @staticmethod
@@ -47,7 +44,8 @@ class WeightNode:
     """
     A node that keeps cost attribute too.
     Tracks:
-    - cost_from_start: in problems where the cost is different on each paths. (ex. Weighted graphs)
+    - cost: In problems where the cost is different on each paths. (ex. Weighted graphs)
+        - For branch_and_bound total cost from the root.
     """
 
     def __init__(self, state, parent, action, cost: float = 0):
