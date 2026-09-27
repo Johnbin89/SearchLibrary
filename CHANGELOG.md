@@ -5,6 +5,21 @@ All notable changes to `libsearch` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-09-27
+
+### Changed
+
+- `branch_and_bound` changed frontier to LIFO (`StackFrontier`) instead of
+  a FIFO (`QueueFrontier`) one. It now reaches a complete solution early, so `best_cost` prunes
+  partial paths during the search rather than only discarding complete ones at
+  the end. (Now expands the last childs added first)
+    - On random 8-city TSP graphs this expands about 7x fewer nodes, keeps
+  the frontier at 22 nodes instead of 5,040, and runs in about 12 ms instead of
+  2 s.
+- `Node.depth` and `HeuristicNode.cost_from_start` are computed from the
+  parent's value in O(1) instead of by walking up to the root in O(depth).
+  - Building a path of depth d drops from O(d²) to O(d).
+
 ## [0.1.0] - 2026-09-26
 
 First release since 0.0.5.post1 in November 2020. It publishes the source
