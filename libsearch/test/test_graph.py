@@ -66,4 +66,9 @@ g = Graph(myGraph)
 
 from libsearch import branch_and_bound
 def test_bb():
-    assert branch_and_bound(actions=g.fullneighbors, start='A', goal='A', path_cost=g.path_cost) == (['A-B', 'A-B-D', 'A-B-D-E', 'A-B-D-E-C', 'A-B-D-E-C-A'], ['B', 'D', 'E', 'C', 'A'])
+    actions, states = branch_and_bound(actions=g.fullneighbors, start='A', goal='A', path_cost=g.path_cost)
+    tour = ['A'] + states
+    # a valid tour: visits every city once and returns to the start
+    assert tour[-1] == 'A' and sorted(tour[:-1]) == sorted(myGraph)
+    # optimal cost; either direction of the cycle (A-B-D-E-C-A or A-C-E-D-B-A) is accepted
+    assert sum(g.path_cost(a, b) for a, b in zip(tour, tour[1:])) == 26

@@ -151,7 +151,7 @@ def branch_and_bound(*, actions, start, goal, path_cost, show_explored=False, co
     """
 
     start = WeightNode(state=start, parent=None, action=None, cost=0)
-    frontier = QueueFrontier()
+    frontier = StackFrontier()
     frontier.add(start)
     explored = set()
     num_explored = 0
