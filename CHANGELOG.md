@@ -5,6 +5,37 @@ All notable changes to `libsearch` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-10-04
+
+### Changed
+
+- **Breaking** for code importing `libsearch.data_structures` directly. The
+  search functions are unaffected.  
+
+  Node classes in `libsearch.data_structures` use dataclasses and inheritance:
+  - `Node` is the base class, used by the blind search algorithms. It holds `state`,
+    `parent`, `action` and `depth`: the number of steps from the root, and
+    provides `path()`.
+    - `Node.path()` returns `(actions, states)` from the root, replacing the same code loop reuse in each search function.
+    - `Node.depth` is always set, and the `enable_depth` argument is removed.
+    - `find_depth` is removed.
+  - `CostNode(Node)` adds `cost_from_start`, used by `branch_and_bound`.
+  - `HeuristicNode(CostNode)` adds `estimated_cost` and `total_cost`, used by
+    the informed searches.
+  - `WeightNode` is replaced by `CostNode`. Pass the edge cost as
+    `step_cost=` instead of assigning `cost` afterwards.
+  - `HeuristicNode.cost` is replaced by `estimated_cost` (h, used by
+    `best_first_search`) and `total_cost` (f = `cost_from_start` +
+    `estimated_cost`, used by `a_star` and `iterative_deepening_a_star`). The
+    `cost=` argument is replaced by `estimated_cost=`.
+
+### Fixed
+
+- `branch_and_bound` no longer re-expands the root after each improved solution.
+  The solution's own node is marked explored instead, so with
+  `show_explored=True` the set now also contains each tour that improved the
+  best cost.
+
 ## [0.1.1] - 2026-09-27
 
 ### Changed

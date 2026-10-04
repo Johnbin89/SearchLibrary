@@ -1,4 +1,4 @@
-from .data_structures import Node, QueueFrontier, StackFrontier, WeightNode
+from .data_structures import CostNode, Node, QueueFrontier, StackFrontier
 
 
 def depth_first_search(*, actions, start, goal, show_explored=False, count_states=False, show_frontier_rate=False, depth=None):
@@ -18,10 +18,7 @@ def depth_first_search(*, actions, start, goal, show_explored=False, count_state
 
     num_explored = 0
 
-    if depth is None:
-        start = Node(state=start, parent=None, action=None)
-    else:  # this is used only when dfs is called in iterative deepening to a certain depth
-        start = Node(state=start, parent=None, action=None, enable_depth=True)
+    start = Node(state=start, parent=None, action=None)
 
     frontier = StackFrontier()
     frontier.add(start)
@@ -36,15 +33,7 @@ def depth_first_search(*, actions, start, goal, show_explored=False, count_state
         num_explored += 1
 
         if node.state == goal:
-            actions_to_goal = []
-            states_to_goal = []
-            while node.parent is not None:
-                actions_to_goal.append(node.action)
-                states_to_goal.append(node.state)
-                node = node.parent
-            actions_to_goal.reverse()
-            states_to_goal.reverse()
-            solution = (actions_to_goal, states_to_goal)
+            solution = node.path()
             # print(solution)
             extras = []
             if count_states:
@@ -56,18 +45,12 @@ def depth_first_search(*, actions, start, goal, show_explored=False, count_state
             return (solution, *extras) if extras else solution
 
         explored.add(node.state)
-        if depth is None:
+        # depth is set only when dfs is called in iterative deepening to a certain depth
+        if depth is None or node.depth <= depth:  # or stops when left side is true
             for action, state in actions(node.state):
                 if not frontier.contains_state(state) and state not in explored:
                     child = Node(state=state, parent=node, action=action)
                     frontier.add(child)
-        else:  # this is used only when dfs is called in iterative deepening to a certain depth
-            if node.depth <= depth:
-                for action, state in actions(node.state):
-                    if not frontier.contains_state(state) and state not in explored:
-                        child = Node(state=state, parent=node, action=action, enable_depth=True)
-                        # print("Child depth: {}".format(depth))
-                        frontier.add(child)
 
 
 def breadth_first_search(*, actions, start, goal, show_explored=False, count_states=False, show_frontier_rate=False):
@@ -95,15 +78,7 @@ def breadth_first_search(*, actions, start, goal, show_explored=False, count_sta
         num_explored += 1
 
         if node.state == goal:
-            actions_to_goal = []
-            states_to_goal = []
-            while node.parent is not None:
-                actions_to_goal.append(node.action)
-                states_to_goal.append(node.state)
-                node = node.parent
-            actions_to_goal.reverse()
-            states_to_goal.reverse()
-            solution = (actions_to_goal, states_to_goal)
+            solution = node.path()
             extras = []
             if count_states:
                 extras.append(num_explored)
@@ -150,7 +125,7 @@ def branch_and_bound(*, actions, start, goal, path_cost, show_explored=False, co
     count_states: if True it will return the number of explored states. num_explored
     """
 
-    start = WeightNode(state=start, parent=None, action=None, cost=0)
+    start = CostNode(state=start, parent=None, action=None)
     frontier = StackFrontier()
     frontier.add(start)
     explored = set()
@@ -170,23 +145,14 @@ def branch_and_bound(*, actions, start, goal, path_cost, show_explored=False, co
                 return best_solution
 
         node = frontier.remove()
-        # node.cost = node.parent.cost + path_cost(node.parent.state + node.state)
-        print("Pickedup:", node.action, node.state, node.cost)
-        if node.cost < best_cost:
+        print("Pickedup:", node.action, node.state, node.cost_from_start)
+        if node.cost_from_start < best_cost:
             num_explored += 1
             print("found node with less cost")
             if node.state == goal and node.parent:
                 print("solution found")
-                best_cost = node.cost
-                actions_to_goal = []
-                states_to_goal = []
-                while node.parent is not None:
-                    actions_to_goal.append(node.action)
-                    states_to_goal.append(node.state)
-                    node = node.parent
-                actions_to_goal.reverse()
-                states_to_goal.reverse()
-                best_solution = (actions_to_goal, states_to_goal)
+                best_cost = node.cost_from_start
+                best_solution = node.path()
                 print("best solution: {}".format(best_solution))
                 print("best cost: {}".format(best_cost))
 
@@ -194,7 +160,6 @@ def branch_and_bound(*, actions, start, goal, path_cost, show_explored=False, co
 
             for action, state in actions(node.action, node.state):
                 if not frontier.contains_node(action, state) and (action, state) not in explored:
-                    child = WeightNode(state=state, parent=node, action=action)
-                    child.cost = child.parent.cost + path_cost(child.parent.state, child.state)
-                    print(child.action, child.cost)
+                    child = CostNode(state=state, parent=node, action=action, step_cost=path_cost(node.state, state))
+                    print(child.action, child.cost_from_start)
                     frontier.add(child)

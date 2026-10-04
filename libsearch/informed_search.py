@@ -16,12 +16,12 @@ def a_star(
 
     frate = []
     num_explored = 0
-    start = HeuristicNode(state=start, parent=None, action=None, cost=0)
+    start = HeuristicNode(state=start, parent=None, action=None)
 
     frontier = ModPriorityQueue()
     costs = {}
-    frontier.add_task(start, start.cost)
-    costs[start] = start.cost
+    frontier.add_task(start, start.total_cost)
+    costs[start] = start.total_cost
 
     explored = set()
     revisited = []
@@ -36,15 +36,7 @@ def a_star(
         explored.add(node.state)
 
         if node.state == goal:
-            actions_to_goal = []
-            states_to_goal = []
-            while node.parent is not None:
-                actions_to_goal.append(node.action)
-                states_to_goal.append(node.state)
-                node = node.parent
-            actions_to_goal.reverse()
-            states_to_goal.reverse()
-            solution = (actions_to_goal, states_to_goal)
+            solution = node.path()
             extras = []
             if count_states:
                 extras.append(num_explored)
@@ -56,19 +48,18 @@ def a_star(
                 extras.append(frate)
             return (solution, *extras) if extras else solution
         print("node state: {} , goal: {}".format(node.state, goal))
-        print("Node cost: {}".format(node.cost))
+        print("Node cost: {}".format(node.total_cost))
 
         for action, state in actions(node.state):
             if state in explored:
                 revisited.append(state)
                 continue
-            child = HeuristicNode(state=state, parent=node, action=action)
-            child.cost = child.cost_from_start + heuristic(child.state, goal)
-            if child not in costs or child.cost < costs[child]:
+            child = HeuristicNode(state=state, parent=node, action=action, estimated_cost=heuristic(state, goal))
+            if child not in costs or child.total_cost < costs[child]:
                 if child in costs:
                     frontier.remove_task(child)
-                costs[child] = child.cost
-                frontier.add_task(child, child.cost)
+                costs[child] = child.total_cost
+                frontier.add_task(child, child.total_cost)
 
 
 def best_first_search(
@@ -86,12 +77,12 @@ def best_first_search(
 
     frate = []
     num_explored = 0
-    start = HeuristicNode(state=start, parent=None, action=None, cost=0)
+    start = HeuristicNode(state=start, parent=None, action=None)
 
     frontier = ModPriorityQueue()
     costs = {}
-    frontier.add_task(start, start.cost)
-    costs[start] = start.cost
+    frontier.add_task(start, start.estimated_cost)
+    costs[start] = start.estimated_cost
 
     explored = set()
     revisited = []
@@ -106,15 +97,7 @@ def best_first_search(
         explored.add(node.state)
 
         if node.state == goal:
-            actions_to_goal = []
-            states_to_goal = []
-            while node.parent is not None:
-                actions_to_goal.append(node.action)
-                states_to_goal.append(node.state)
-                node = node.parent
-            actions_to_goal.reverse()
-            states_to_goal.reverse()
-            solution = (actions_to_goal, states_to_goal)
+            solution = node.path()
             extras = []
             if count_states:
                 extras.append(num_explored)
@@ -126,22 +109,19 @@ def best_first_search(
                 extras.append(frate)
             return (solution, *extras) if extras else solution
         print("node state: {} , goal: {}".format(node.state, goal))
-        print("Node cost: {}".format(node.cost))
+        print("Node cost: {}".format(node.estimated_cost))
 
         for action, state in actions(node.state):
             if state in explored:
                 revisited.append(state)
                 continue
-            child = HeuristicNode(state=state, parent=node, action=action)
-            # print("Child state: {}".format(child.state))
-            # print("goal: {}".format(goal))
-            child.cost = heuristic(child.state, goal)
-            # print("Child cost: {}".format(child.cost))
-            if child not in costs or child.cost < costs[child]:
+            child = HeuristicNode(state=state, parent=node, action=action, estimated_cost=heuristic(state, goal))
+            # print("Child cost: {}".format(child.estimated_cost))
+            if child not in costs or child.estimated_cost < costs[child]:
                 if child in costs:
                     frontier.remove_task(child)
-                costs[child] = child.cost
-                frontier.add_task(child, child.cost)
+                costs[child] = child.estimated_cost
+                frontier.add_task(child, child.estimated_cost)
 
 
 from heapq import heappop, heappush
@@ -162,7 +142,7 @@ def id_depth_first_search(*, actions, start, goal, heuristic, show_explored=Fals
     num_explored = 0
     frate = []
 
-    start = HeuristicNode(state=start, parent=None, action=None, cost=0)
+    start = HeuristicNode(state=start, parent=None, action=None)
 
     frontier = StackFrontier()
     frontier.add(start)
@@ -179,15 +159,7 @@ def id_depth_first_search(*, actions, start, goal, heuristic, show_explored=Fals
         num_explored += 1
 
         if node.state == goal:
-            actions_to_goal = []
-            states_to_goal = []
-            while node.parent is not None:
-                actions_to_goal.append(node.action)
-                states_to_goal.append(node.state)
-                node = node.parent
-            actions_to_goal.reverse()
-            states_to_goal.reverse()
-            solution = (actions_to_goal, states_to_goal)
+            solution = node.path()
             # print(solution)
             extras = []
             if show_explored:
@@ -197,14 +169,13 @@ def id_depth_first_search(*, actions, start, goal, heuristic, show_explored=Fals
             return (solution, *extras) if extras else solution
 
         explored.add(node.state)
-        if node.cost <= depth:
+        if node.total_cost <= depth:
             for action, state in actions(node.state):
                 if not frontier.contains_state(state) and state not in explored:
-                    child = HeuristicNode(state=state, parent=node, action=action)
-                    child.cost = child.cost_from_start + heuristic(child.state, goal)
+                    child = HeuristicNode(state=state, parent=node, action=action, estimated_cost=heuristic(state, goal))
                     frontier.add(child)
         else:
-            heappush(encountered_costs, node.cost)
+            heappush(encountered_costs, node.total_cost)
 
 
 def iterative_deepening_a_star(*, actions, start, goal, heuristic, show_explored=False, show_frontier_rate=False):
@@ -214,8 +185,8 @@ def iterative_deepening_a_star(*, actions, start, goal, heuristic, show_explored
     of the cost-limited search that found the solution.
     """
 
-    root_node = HeuristicNode(state=start, parent=None, action=None, cost=0)
-    depth = root_node.cost
+    root_node = HeuristicNode(state=start, parent=None, action=None)
+    depth = root_node.total_cost
     solution = None
     print("Iterative Deepening with A Star:")
     while True:

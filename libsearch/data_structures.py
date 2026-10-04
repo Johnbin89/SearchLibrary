@@ -1,66 +1,69 @@
+from dataclasses import InitVar, dataclass, field
+from typing import Any, Optional
+
+
+# eq=False keeps identity hashing: nodes are used as dict keys by the priority queue.
+@dataclass(eq=False)
 class Node:
-    def __init__(self, state, parent, action, enable_depth=False):
-        self.state = state
-        self.parent = parent
-        self.action = action
-        if enable_depth:
-            self.depth = parent.depth + 1 if parent else 0
-
-    @staticmethod
-    def find_depth(node):
-        count = 0
-        while node.parent is not None:
-            count += 1
-            node = node.parent
-        return count
-
-
-class HeuristicNode:
     """
-    A node that keeps cost attribute too.
+    A node of the search tree, used in blind search.
     Tracks:
-    - cost_from_start: in problems where the cost of the path between two nodes equals to 1 (ex. moving on next tile in a maze)
-    - cost: estimated cost to the goal. It will be calculated by a heuristic function
-    Used in informed search
+    - depth: number of steps from the root.
     """
 
-    def __init__(self, state, parent, action, cost: float = 0):
-        self.state = state
-        self.parent = parent
-        self.action = action
-        self.cost_from_start = parent.cost_from_start + 1 if parent else 0
-        self.cost = cost
+    state: Any
+    parent: Optional["Node"] = field(default=None, repr=False)
+    action: Any = None
+    depth: int = field(init=False)
 
-    @staticmethod
-    def find_depth(node):
-        count = 0
+    def __post_init__(self):
+        self.depth = self.parent.depth + 1 if self.parent else 0
+
+    def path(self):
+        """Return (actions, states) from the root to this node, root excluded."""
+        actions, states, node = [], [], self
         while node.parent is not None:
-            count += 1
+            actions.append(node.action)
+            states.append(node.state)
             node = node.parent
-        return count
+        actions.reverse()
+        states.reverse()
+        return actions, states
 
 
-class WeightNode:
+@dataclass(eq=False)
+class CostNode(Node):
     """
-    A node that keeps cost attribute too.
+    A node that keeps the cost of the path from the root.
     Tracks:
-    - cost: In problems where the cost is different on each paths. (ex. Weighted graphs)
-        - For branch_and_bound total cost from the root.
+    - cost_from_start (g): the parent's cost_from_start plus step_cost, the cost of the edge
+      parent -> self. step_cost defaults to 1 (ex. moving on next tile in a maze) and is set
+      per edge in weighted graphs (ex. branch_and_bound).
     """
 
-    def __init__(self, state, parent, action, cost: float = 0):
-        self.state = state
-        self.parent = parent
-        self.action = action
-        self.cost = cost
+    parent: Optional["CostNode"] = field(default=None, repr=False)
+    step_cost: InitVar[float] = 1
+    cost_from_start: float = field(init=False)
 
-    @staticmethod
-    def find_depth(node):
-        count = 0
-        while node.parent is not None:
-            count += 1
-            node = node.parent
-        return count
+    def __post_init__(self, step_cost):
+        super().__post_init__()
+        self.cost_from_start = self.parent.cost_from_start + step_cost if self.parent else 0
+
+
+@dataclass(eq=False)
+class HeuristicNode(CostNode):
+    """
+    A node that keeps a heuristic estimate too. Used in informed search.
+    Tracks:
+    - estimated_cost (h): estimated cost from this node to the goal, calculated by a heuristic function.
+    - total_cost (f): cost_from_start + estimated_cost, the estimated cost of the full path to goal through this node.
+    """
+
+    estimated_cost: float = 0
+
+    @property
+    def total_cost(self):
+        return self.cost_from_start + self.estimated_cost
 
 
 from collections import deque
