@@ -141,9 +141,11 @@ solution = branch_and_bound(actions=g.fullneighbors, start='A', goal='A', path_c
 
 If we were to print _solution_ we would get the following:
 ```shell
-(['A-B', 'A-B-D', 'A-B-D-E', 'A-B-D-E-C', 'A-B-D-E-C-A'], ['B', 'D', 'E', 'C', 'A'])
+(['A-C', 'A-C-E', 'A-C-E-D', 'A-C-E-D-B', 'A-C-E-D-B-A'], ['C', 'E', 'D', 'B', 'A'])
 ```
 The first list are the actions (moving from each letter(State) to the next one) and the latter is a list of States representing the path to reach the Goal State "A", whereas in our case it is the same as the Initial State as described in TSP problem.
+
+The tour A → C → E → D → B → A has a total cost of 5 + 3 + 4 + 6 + 8 = 26, the lowest possible. Its reverse, A → B → D → E → C → A, costs the same; when several tours share the lowest cost, branch and bound returns the first one it finds.
 
 ##### Optional arguments
 If we wish to see how many states the branch and bound algorithm explored:
@@ -151,7 +153,7 @@ If we wish to see how many states the branch and bound algorithm explored:
 solution, num_explored = branch_and_bound(actions=g.fullneighbors, start='A', goal='A', path_cost=g.path_cost, count_states=True)
 ```
 
-Checking the value of num_explored we can see that 68 States(path combined) were explored before reaching the Goal.  
+Checking the value of num_explored we can see that 61 States(path combined) were explored before reaching the Goal.  
 
 More details on the implementation of _fullneighbors_ function which return child States for the specific TSP problem and the path_cost function which return the cost assigned to each path, can be found on [graph.py](https://github.com/Johnbin89/SearchLibrary/blob/master/examples/graph.py) in examples folder.
 
